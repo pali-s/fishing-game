@@ -1,7 +1,7 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 
 const App = () => {
-  const [flipped, setFlipped] = useState(false);
+  const [flippedTiles, setFlippedTiles] = useState(Array(6).fill(false));
   const [playerturn, setPlayerTurn] = useState(1);
   const [number, setNumber] = useState(null);
   const [count, setCount] = useState(null);
@@ -20,10 +20,21 @@ const App = () => {
     return pondColors[Math.floor(Math.random() * pondColors.length)];
   };
 
-  const handleClick=() => {
-    setFlipped(!flipped);
+  const [colors] = useState(() =>
+    Array.from({ length: 6 }, () => getRandomColor())
+  );
+
+
+  const handleClick = (index) => {
+    if (flippedTiles[index]) return; // Prevent action if already flipped
     const newNumber = Math.floor(Math.random() * (6 - 1 + 1)) + 1;
+
+    const newFlippedTiles = [...flippedTiles];
+    newFlippedTiles[index] = true;
+    setFlippedTiles(newFlippedTiles);
+
     setNumber(newNumber);
+
     if (playerturn === 1) {
       setCount(prevCount => prevCount + newNumber);
       setPlayerTurn(2);
@@ -48,12 +59,20 @@ const App = () => {
     <div className="min-h-screen bg-sky-100 flex items-center justify-center">
 
       <div className="grid grid-cols-4 grid-rows-3 gap-4 bg-sky-100 rounded-xl shadow-xl max-w-lg w-full">
-        <div className={`row-span-2 ${getRandomColor()} rounded shadow-inner p-4`} onClick={handleClick}>{flipped ? number : ''}</div>
-        <div className={`col-span-2 ${getRandomColor()} rounded shadow-inner p-4`} onClick={handleClick}>12</div>
-        <div className={`row-span-3 col-start-4 ${getRandomColor()} rounded shadow-inner p-4`} onClick={handleClick}>13</div>
-        <div className={`row-span-2 col-start-3 row-start-2 ${getRandomColor()} rounded shadow-inner p-4`} onClick={handleClick}>14</div>
-        <div className={`col-span-2 col-start-1 row-start-3 ${getRandomColor()} rounded shadow-inner p-4`} onClick={handleClick}>15</div>
-        <div className={`col-start-2 row-start-2 ${getRandomColor()} rounded shadow-inner p-4`} onClick={handleClick}>16</div>
+        {/* {tiles.map((_, i) => (
+  <div
+    key={i}
+    className={`p-4 shadow-inner rounded ${colors[i]} ${flippedTiles[i] ? 'opacity-50 cursor-not-allowed' : ''}`}
+    onClick={() => handleClick(i)}
+  >
+    {flippedTiles[i] ? numbers[i] : ''}
+  </div>))} */}
+        <div className={`row-span-2 ${colors[0]} rounded shadow-inner p-4 ${flippedTiles ? 'opacity-50 cursor-not-allowed' : ''}`} onClick={handleClick}>{flippedTiles ? number : ''}</div>
+        <div className={`col-span-2 ${colors[1]} rounded shadow-inner p-4`} onClick={handleClick}>12</div>
+        <div className={`row-span-3 col-start-4 ${colors[2]} rounded shadow-inner p-4`} onClick={handleClick}>13</div>
+        <div className={`row-span-2 col-start-3 row-start-2 ${colors[3]} rounded shadow-inner p-4`} onClick={handleClick}>14</div>
+        <div className={`col-span-2 col-start-1 row-start-3 ${colors[4]} rounded shadow-inner p-4`} onClick={handleClick}>15</div>
+        <div className={`col-start-2 row-start-2 ${colors[5]} rounded shadow-inner p-4`} onClick={handleClick}>16</div>
       </div>
 
     </div>
