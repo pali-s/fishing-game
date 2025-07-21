@@ -40,3 +40,25 @@
 .read-the-docs {
   color: #888;
 }
+
+.fish-container {
+  height: 32px; /* start by showing just the head */
+  overflow: hidden;
+  transition: height 0.5s ease;
+  display: flex;
+  align-items: flex-end; /* ✅ head sticks to bottom */
+}
+
+.fish-container.reveal {
+  height: 64px; /* full fish height */
+}
+
+.fish-image {
+  transition: transform 0.5s ease;
+  transform: translateY(0);
+}
+
+.fish-container.reveal .fish-image {
+  transform: translateY(32px); /* move body upward as container grows */
+}
+
