@@ -152,7 +152,7 @@ const gameScreen = () => {
                 {gameOver ? winner : `Player ${playerturn}'s Turn`}
             </div>
 
-            <div className="grid grid-cols-6 gap-2 [grid-auto-rows:auto]">
+            <div className="grid grid-cols-6 gap-2 [grid-auto-rows:auto] bg-blue-400 rounded-full p-4">
                 {tiles.map((tile, i) => (
                     <div
                         key={i}
