@@ -11,6 +11,7 @@ const gameScreen = () => {
     const [count, setCount] = useState(null);
     const [count1, setCount1] = useState(null);
     const [gameOver, setGameOver] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
 
     const pondColors = [
         'bg-teal-400', 'bg-teal-500',
@@ -118,7 +119,8 @@ const gameScreen = () => {
                 console.log("It's a tie!");
                 handleLoss("Both Players");
             }
-        }}, [gameOver, count, count1]);
+        }
+    }, [gameOver, count, count1]);
 
     const handleLoss = (loser) => {
         console.log(`${loser} lost the game!`);
@@ -141,29 +143,37 @@ const gameScreen = () => {
         gameOver && (count > count1 ? 'Player 1 Wins!' : count1 > count ? 'Player 2 Wins!' : 'It’s a Tie!');
 
     return (
-        <div className="p-6 space-y-6 max-w-full mx-auto ">
-
-            <div className="flex justify-between text-3xl font-extrabold">
-                <div>Player 1: {count}</div>
-                <div>Player 2: {count1}</div>
+        <div className="relative min-h-screen bg-gradient-to-br from-lime-100 via-emerald-50 to-green-100 flex flex-col justify-center p-4">
+            <div className="text-center z-50 fixed top-4 left-1/2 transform -translate-x-1/2">
+                <button
+                    onClick={() => setShowInfo(true)}
+                    className="bg-gradient-to-r from-lime-400 via-emerald-500 to-green-600 text-white font-bold py-3 px-6 rounded text-lg shadow-xl hover:scale-105 hover:from-emerald-400 hover:to-lime-500 transition-all duration-300 my-6"
+                >
+                    🪷 Things You Need to Know
+                </button>
             </div>
-
-            <div className="text-center text-2xl font-bold">
+            <div className="text-center text-2xl font-bold text-pink-800 py-6">
                 {gameOver ? winner : `Player ${playerturn}'s Turn`}
             </div>
 
-            <div className="grid grid-cols-6 gap-2 [grid-auto-rows:auto] bg-blue-400 rounded-full p-4">
+            <div className="flex justify-between text-3xl font-extrabold py-8 text-pink-800">
+                <div>🪷 Player 1: {count} </div>
+                <div>🪷 Player 2: {count1} </div>
+            </div>
+
+
+            <div className="grid grid-cols-6 gap-2 [grid-auto-rows:auto] bg-blue-400 rounded-full px-4 py-2 w-[95%] sm:w-[90%] md:w-[85%] lg:w-[80%] mx-auto relative overflow-visible shadow-lg">
                 {tiles.map((tile, i) => (
                     <div
                         key={i}
-                        className={`relative w-full h-[500px] overflow-hidden rounded flex items-end justify-center ${flippedTiles[i] ? 'cursor-not-allowed' : ''}`}
+                        className={`relative w-full h-[100px] overflow-visible rounded flex items-end justify-center ${flippedTiles[i] ? 'cursor-not-allowed' : ''}`}
                         onClick={() => handleClick(i)}
                     >
-                        <div className={`fish-container ${flippedTiles[i] ? 'reveal' : ''}`}>
+                        <div className={`fish-container transition-transform duration-500 ${flippedTiles[i] ? 'reveal' : ''}`}>
                             <img
                                 src={flippedTiles[i] ? fishImage[i] : '/Images/fish-head.png'}
                                 alt="Fish"
-                                className="w-30 h-auto transition-transform duration-500 ${flippedTiles[i] ? '-translate-y-12' : 'translate-y-0'}"
+                                className="w-30 h-auto transition-transform duration-500 ${flippedTiles[i] ? '-translate-y-12' : 'translate-y-0'}" style={{ zIndex: 10 }}
                             />
                         </div>
                     </div>))}
@@ -172,13 +182,60 @@ const gameScreen = () => {
             <div className="text-center">
                 <button
                     onClick={resetGame}
-                    className="bg-gradient-to-r from-red-500 via-pink-600 to-purple-700 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg hover:scale-105 hover:from-pink-500 hover:to-red-600 transition-transform duration-300 my-6"
+                    className="bg-gradient-to-r to-pink-500 via-pink-400 from-rose-300 text-white font-bold py-3 px-6 rounded-full text-lg shadow-lg hover:scale-105 hover:from-pink-500 hover:to-red-600 transition-transform duration-300 my-6"
                 >
                     Reset Game
                 </button>
             </div>
 
+
+            {/* Info Modal */}
+            {showInfo && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/30 px-4">
+                    <div className="relative bg-gradient-to-br from-lime-100 via-emerald-50 to-green-100 border border-green-300 shadow-2xl rounded-3xl p-6 max-w-md w-full">
+
+                        {/* Content */}
+                        <h2 className="text-2xl font-bold text-green-700 mb-4 text-center pt-6">🪷 Things You Need to Know</h2>
+                        <ul className="space-y-3 text-green-800 text-base font-medium">
+                            <li>🎯 Tap a fish head to reveal the full fish.</li>
+                            <li>🚫 Tiles cannot be clicked more than once.</li>
+                            <li>🌸 Each fish gives different points:</li>
+                            <ul className="pl-5 mt-2 space-y-1 list-none">
+                                <li className="flex items-center gap-2 text-sm text-green-700">
+                                    <img src="/Images/5.png" alt="Fish 5" className="w-8 h-auto" /> = 5 points
+                                </li>
+                                <li className="flex items-center gap-2 text-sm text-green-700">
+                                    <img src="/Images/4.png" alt="Fish 4" className="w-8 h-auto" /> = 4 points
+                                </li>
+                                <li className="flex items-center gap-2 text-sm text-green-700">
+                                    <img src="/Images/3.png" alt="Fish 3" className="w-8 h-auto" /> = 3 points
+                                </li>
+                                <li className="flex items-center gap-2 text-sm text-green-700">
+                                    <img src="/Images/2.png" alt="Fish 2" className="w-8 h-auto" /> = 2 points
+                                </li>
+                                <li className="flex items-center gap-2 text-sm text-green-700">
+                                    <img src="/Images/1.png" alt="Fish 1" className="w-8 h-auto" /> = 1 point
+                                </li>
+                            </ul>
+                            <li>💡 Find high-score fish with strategy and luck!</li>
+                        </ul>
+
+                        {/* Close Button */}
+                        <button
+                            className="absolute top-3 right-4 text-green-600 hover:text-green-800 text-xl font-bold"
+                            onClick={() => setShowInfo(false)}
+                            aria-label="Close"
+                        >
+                            ✖
+                        </button>
+                    </div>
+                </div>
+            )}
+
+
+
         </div>
+
 
 
     )
