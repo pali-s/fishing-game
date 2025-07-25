@@ -13,6 +13,19 @@ const gameScreen = () => {
     const [gameOver, setGameOver] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
 
+    const [player1Name, setPlayer1Name] = useState('Player 1');
+    const [player2Name, setPlayer2Name] = useState('Player 2');
+    const [isEditingPlayer1, setIsEditingPlayer1] = useState(false);
+    const [isEditingPlayer2, setIsEditingPlayer2] = useState(false);
+
+    const handleBlur = (setEditing) => () => setEditing(false);
+
+    const handleKeyDown = (e, setEditing) => {
+        if (e.key === 'Enter') {
+            setEditing(false);
+        }
+    };
+
     const pondColors = [
         'bg-teal-400', 'bg-teal-500',
         'bg-blue-400', 'bg-blue-500',
@@ -111,10 +124,10 @@ const gameScreen = () => {
         if (gameOver) {
             if (count > count1) {
                 console.log("Player 1 wins!");
-                handleLoss("Player 2");
+                handleLoss(player2Name);
             } else if (count < count1) {
                 console.log("Player 2 wins!");
-                handleLoss("Player 1");
+                handleLoss(player1Name);
             } else {
                 console.log("It's a tie!");
                 handleLoss("Both Players");
@@ -139,8 +152,7 @@ const gameScreen = () => {
         setGameOver(false);
     }
 
-    const winner =
-        gameOver && (count > count1 ? 'Player 1 Wins!' : count1 > count ? 'Player 2 Wins!' : 'It’s a Tie!');
+    const winner = gameOver && (count > count1? `${player1Name} Wins!`: count1 > count? `${player2Name} Wins!`: "It’s a Tie!");
 
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-lime-100 via-emerald-50 to-green-100 flex flex-col justify-center p-4">
@@ -151,14 +163,57 @@ const gameScreen = () => {
                 >
                     🪷 Things You Need to Know
                 </button>
-            </div>
             <div className="text-center text-2xl font-bold text-pink-800 py-6">
-                {gameOver ? winner : `Player ${playerturn}'s Turn`}
+                {gameOver ? winner : (playerturn==1?`${player1Name}'s Turn`: `${player2Name}'s Turn`)}
+            </div>
             </div>
 
             <div className="flex justify-between text-3xl font-extrabold py-8 text-pink-800">
-                <div>🪷 Player 1: {count} </div>
-                <div>🪷 Player 2: {count1} </div>
+                <div>
+                    🪷{' '}
+                    {isEditingPlayer1 ? (
+                        <input
+                            type="text"
+                            value={player1Name}
+                            onChange={(e) => setPlayer1Name(e.target.value)}
+                            onBlur={handleBlur(setIsEditingPlayer1)}
+                            onKeyDown={(e) => handleKeyDown(e, setIsEditingPlayer1)}
+                            autoFocus
+                            className="bg-transparent border-b-2 border-pink-800 focus:outline-none focus:border-pink-500 mx-2"
+                        />
+                    ) : (
+                        <span
+                            onClick={() => setIsEditingPlayer1(true)}
+                            className="cursor-pointer hover:underline mx-2"
+                        >
+                            {player1Name}
+                        </span>
+                    )}
+                    : {count}
+                </div>
+
+                <div>
+                    🪷{' '}
+                    {isEditingPlayer2 ? (
+                        <input
+                            type="text"
+                            value={player2Name}
+                            onChange={(e) => setPlayer2Name(e.target.value)}
+                            onBlur={handleBlur(setIsEditingPlayer2)}
+                            onKeyDown={(e) => handleKeyDown(e, setIsEditingPlayer2)}
+                            autoFocus
+                            className="bg-transparent border-b-2 border-pink-800 focus:outline-none focus:border-pink-500 mx-2"
+                        />
+                    ) : (
+                        <span
+                            onClick={() => setIsEditingPlayer2(true)}
+                            className="cursor-pointer hover:underline mx-2"
+                        >
+                            {player2Name}
+                        </span>
+                    )}
+                    : {count1}
+                </div>
             </div>
 
 
