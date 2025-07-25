@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 
-const gameScreen = () => {
+const gameScreen = ({ isMuted }) => {
     const navigate = useNavigate();
 
     const [flippedTiles, setFlippedTiles] = useState(Array(6).fill(false));
@@ -74,10 +74,17 @@ const gameScreen = () => {
     const handleClick = (index) => {
         if (flippedTiles[index] || gameOver) return; // Prevent action if already flipped
 
-        const reelSound = new Audio('/SFX/water-drip.mp3');
-        reelSound.currentTime = 0; // Reset sound to start
-        reelSound.playbackRate = 3.0;
-        reelSound.play();
+        // const reelSound = new Audio('/SFX/water-drip.mp3');
+        // reelSound.currentTime = 0; // Reset sound to start
+        // reelSound.playbackRate = 3.0;
+        // reelSound.play();
+
+        if (!isMuted) {
+            const sound = new Audio('/SFX/water-drip.mp3');
+            sound.currentTime = 0; // Reset sound to start
+            sound.playbackRate = 3.0; // Speed up the sound
+            sound.play();
+        }
 
         const newNumber = Math.floor(Math.random() * 5) + 1;
         const newFlippedTiles = [...flippedTiles];
@@ -107,16 +114,6 @@ const gameScreen = () => {
         if (newFlippedTiles.every(tile => tile)) {
             setGameOver(true);
             console.log(count, count1);
-            // if (count > count1) {
-            //     console.log("Player 1 wins!");
-            //     handleLoss("Player 2");
-            // } else if (count < count1) {
-            //     console.log("Player 2 wins!");
-            //     handleLoss("Player 1");
-            // } else {
-            //     console.log("It's a tie!");
-            //     handleLoss("Both Players");
-            // }
         }
     }
 
@@ -152,7 +149,7 @@ const gameScreen = () => {
         setGameOver(false);
     }
 
-    const winner = gameOver && (count > count1? `${player1Name} Wins!`: count1 > count? `${player2Name} Wins!`: "It’s a Tie!");
+    const winner = gameOver && (count > count1 ? `${player1Name} Wins!` : count1 > count ? `${player2Name} Wins!` : "It’s a Tie!");
 
     return (
         <div className="relative min-h-screen bg-gradient-to-br from-lime-100 via-emerald-50 to-green-100 flex flex-col justify-center p-4">
@@ -163,9 +160,9 @@ const gameScreen = () => {
                 >
                     🪷 Things You Need to Know
                 </button>
-            <div className="text-center text-2xl font-bold text-pink-800 py-6">
-                {gameOver ? winner : (playerturn==1?`${player1Name}'s Turn`: `${player2Name}'s Turn`)}
-            </div>
+                <div className="text-center text-2xl font-bold text-pink-800 py-6">
+                    {gameOver ? winner : (playerturn == 1 ? `${player1Name}'s Turn` : `${player2Name}'s Turn`)}
+                </div>
             </div>
 
             <div className="flex justify-between text-3xl font-extrabold py-8 text-pink-800">

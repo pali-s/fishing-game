@@ -16,7 +16,7 @@ const insults = [
 
 
 
-export default function TrashTalkScreen() {
+export default function TrashTalkScreen({isMuted}) {
     const location = useLocation();
     const navigate = useNavigate();
     const loser = location.state?.loser || "You";
@@ -30,10 +30,11 @@ export default function TrashTalkScreen() {
         setInsult(insults[Math.floor(Math.random() * insults.length)]);
         
         // Play sound effect
+        if (!isMuted){
         const audio = new Audio('/SFX/vine-boom.mp3');
         audio.play().catch((error) => {
             console.error("Error playing sound:", error);
-        });
+        });}
 
         // Fire confetti
         confetti({
