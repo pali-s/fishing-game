@@ -18,6 +18,9 @@ const gameScreen = ({ isMuted }) => {
     const [isEditingPlayer1, setIsEditingPlayer1] = useState(false);
     const [isEditingPlayer2, setIsEditingPlayer2] = useState(false);
 
+    const [lastFlippedIndex, setLastFlippedIndex] = useState(null);
+
+
     const handleBlur = (setEditing) => () => setEditing(false);
 
     const handleKeyDown = (e, setEditing) => {
@@ -98,6 +101,7 @@ const gameScreen = ({ isMuted }) => {
         newfishImages[index] = selectedFishImage;
 
         setFlippedTiles(newFlippedTiles);
+        setLastFlippedIndex(index);
         setNumbers(newNumbers);
         setfishImage(newfishImages);
 
@@ -166,50 +170,54 @@ const gameScreen = ({ isMuted }) => {
             </div>
 
             <div className="flex justify-between text-3xl font-extrabold py-8 text-pink-800">
-                <div>
-                    🪷{' '}
-                    {isEditingPlayer1 ? (
-                        <input
-                            type="text"
-                            value={player1Name}
-                            onChange={(e) => setPlayer1Name(e.target.value)}
-                            onBlur={handleBlur(setIsEditingPlayer1)}
-                            onKeyDown={(e) => handleKeyDown(e, setIsEditingPlayer1)}
-                            autoFocus
-                            className="bg-transparent border-b-2 border-pink-800 focus:outline-none focus:border-pink-500 mx-2"
-                        />
-                    ) : (
-                        <span
-                            onClick={() => setIsEditingPlayer1(true)}
-                            className="cursor-pointer hover:underline mx-2"
-                        >
-                            {player1Name}
-                        </span>
-                    )}
-                    : {count}
+                <div className="flex flex-col items-center relative">
+                    <div>
+                        🪷{' '}
+                        {isEditingPlayer1 ? (
+                            <input
+                                type="text"
+                                value={player1Name}
+                                onChange={(e) => setPlayer1Name(e.target.value)}
+                                onBlur={handleBlur(setIsEditingPlayer1)}
+                                onKeyDown={(e) => handleKeyDown(e, setIsEditingPlayer1)}
+                                autoFocus
+                                className="bg-transparent border-b-2 border-pink-800 focus:outline-none focus:border-pink-500 mx-2"
+                            />
+                        ) : (
+                            <span
+                                onClick={() => setIsEditingPlayer1(true)}
+                                className="cursor-pointer hover:underline mx-2"
+                            >
+                                {player1Name}
+                            </span>
+                        )}
+                        : {count}
+                    </div>
                 </div>
 
-                <div>
-                    🪷{' '}
-                    {isEditingPlayer2 ? (
-                        <input
-                            type="text"
-                            value={player2Name}
-                            onChange={(e) => setPlayer2Name(e.target.value)}
-                            onBlur={handleBlur(setIsEditingPlayer2)}
-                            onKeyDown={(e) => handleKeyDown(e, setIsEditingPlayer2)}
-                            autoFocus
-                            className="bg-transparent border-b-2 border-pink-800 focus:outline-none focus:border-pink-500 mx-2"
-                        />
-                    ) : (
-                        <span
-                            onClick={() => setIsEditingPlayer2(true)}
-                            className="cursor-pointer hover:underline mx-2"
-                        >
-                            {player2Name}
-                        </span>
-                    )}
-                    : {count1}
+                <div className="flex flex-col items-center relative">
+                    <div>
+                        🪷{' '}
+                        {isEditingPlayer2 ? (
+                            <input
+                                type="text"
+                                value={player2Name}
+                                onChange={(e) => setPlayer2Name(e.target.value)}
+                                onBlur={handleBlur(setIsEditingPlayer2)}
+                                onKeyDown={(e) => handleKeyDown(e, setIsEditingPlayer2)}
+                                autoFocus
+                                className="bg-transparent border-b-2 border-pink-800 focus:outline-none focus:border-pink-500 mx-2"
+                            />
+                        ) : (
+                            <span
+                                onClick={() => setIsEditingPlayer2(true)}
+                                className="cursor-pointer hover:underline mx-2"
+                            >
+                                {player2Name}
+                            </span>
+                        )}
+                        : {count1}
+                    </div>
                 </div>
             </div>
 
@@ -221,11 +229,19 @@ const gameScreen = ({ isMuted }) => {
                         className={`relative w-full h-[100px] overflow-visible rounded flex items-end justify-center ${flippedTiles[i] ? 'cursor-not-allowed' : ''}`}
                         onClick={() => handleClick(i)}
                     >
-                        <div className={`fish-container transition-transform duration-500 ${flippedTiles[i] ? 'reveal' : ''}`}>
+                        <div className="relative">
+                            {/* 🪝 emoji above the last flipped tile */}
+                            {lastFlippedIndex === i && (
+                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-3xl animate-bounce pointer-events-none">
+                                    🪝
+                                </div>
+                            )}
+
                             <img
                                 src={flippedTiles[i] ? fishImage[i] : '/Images/fish-head.png'}
                                 alt="Fish"
-                                className="w-30 h-auto transition-transform duration-500 ${flippedTiles[i] ? '-translate-y-12' : 'translate-y-0'}" style={{ zIndex: 10 }}
+                                className={`w-30 h-auto transition-transform duration-500 ${flippedTiles[i] ? '-translate-y-12' : 'translate-y-0'}`}
+                                style={{ zIndex: 10 }}
                             />
                         </div>
                     </div>))}
